@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduXP</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://source.unsplash.com/1600x900/?futuristic,technology') no-repeat center center fixed;
+            background-size: cover;
+            color: #f4f4f4;
+        }
+
+        header {
+            background: #281549;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 20px;
+            background: #671d76;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        h2 {
+            color: #00FFAB; /* Neon Green */
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background: #281549;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        #chatbot {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        #chatbot-input {
+            margin-top: 10px;
+            display: flex;
+            width: 100%;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #chatbot-output {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            background: #fff;
+            color: #333;
+        }
+
+        .lesson {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .lesson button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background: rgba(0, 123, 255, 0.6);
+            color: white;
+        }
+
+        #user-input-form {
+            text-align: center;
+            margin: 20px;
+        }
+
+        #user-input-form input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #user-input-form button {
+            padding: 10px 15px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #eee;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #00FFAB; /* Neon Green */
+            width: 0;
+            border-radius: 5px;
+        }
+
+        .level-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00FFAB;
+            text-align: right;
+        }
+
+        .hearts {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+        }
+
+        .heart {
+            color: red;
+            margin-left: 5px;
+        }
+
+        .timer {
+            font-size: 16px;
+            color: #FFD700; /* Gold */
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>EduXP</h1>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('home')">Home</a></li>
+                <li><a href="#" onclick="showSection('subjects')">Subjects</a></li>
+                <li><a href="#" onclick="showSection('leaderboard')">Leaderboard</a></li>
+                <li><a href="#" onclick="showSection('profile')">Profile</a></li>
+                <li><a href="#" onclick="showSection('help')">Help</a></li>
+                <li><a href="#" onclick="showSection('chatbot')">Homework Help (EduAI)</a></li>
+            </ul>
+        </nav>
+        <div class="hearts" id="hearts"></div>
+        <div id="heart-timer" class="timer hidden">Time to regain heart: <span id="timer-display">03:00</span></div>
+    </header>
+
+    <main>
+        <div id="user-input-form" class="active">
+            <h2>Welcome to EduXP!</h2>
+            <p>Please enter your name and email to get started:</p>
+            <input type="text" id="username" placeholder="Your Name" required>
+            <input type="email" id="useremail" placeholder="Your Email" required>
+            <button onclick="submitUserInfo()">Submit</button>
+        </div>
+
+        <div id="home" class="hidden">
+            <h2>Welcome to EduXP!</h2>
+            <p>Welcome to EduXP, where learning meets fun! We believe that education should be engaging and enjoyable, which is why we’ve created a gamified platform designed specifically for students.</p>
+            <p>At EduXP, we understand that every student learns differently. Our platform offers a variety of interactive challenges, quizzes, and rewards that cater to diverse learning styles.</p>
+            <h3>Get in Touch</h3>
+            <p>If you have any questions or would like to learn more about EduXP, feel free to reach out to us!</p>
+        </div>
+
+        <div id="subjects" class="hidden">
+            <h2>Subjects</h2>
+            <ul>
+                <li><a href="#" onclick="showSection('math')">Maths</a></li>
+                <li><a href="#" onclick="showSection('english')">English</a></li>
+                <li><a href="#" onclick="showSection('science')">Science</a></li>
+                <li><a href="#" onclick="showSection('programming')">Programming</a></li>
+            </ul>
+        </div>
+
+        <div id="math" class="hidden">
+            <h2>Math</h2>
+            <p>Math is the study of numbers, shapes, and patterns. It is essential for solving problems in various fields.</p>
+            <div class="lesson">
+                <h3>Lesson 1: Basic Addition</h3>
+                <p>Learn how to perform basic addition.</p>
+                <button onclick="completeLesson(10, true)">Complete Lesson (+10 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+            <div class="lesson">
+                <h3>Lesson 2: Basic Subtraction</h3>
+                <p>Learn how to perform basic subtraction.</p>
+                <button onclick="completeLesson(10, true)">Complete Lesson (+10 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+        </div>
+
+        <div id="english" class="hidden">
+            <h2>English</h2>
+            <p>English is a global language that enhances communication skills. It includes grammar, literature, and writing techniques.</p>
+            <div class="lesson">
+                <h3>Lesson 1: Understanding Nouns</h3>
+                <p>Learn about nouns and their usage.</p>
+                <button onclick="completeLesson(15, true)">Complete Lesson (+15 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+            <div class="lesson">
+                <h3>Lesson 2: Basic Grammar</h3>
+                <p>Understand the basics of English grammar.</p>
+                <button onclick="completeLesson(15, true)">Complete Lesson (+15 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+        </div>
+
+        <div id="science" class="hidden">
+            <h2>Science</h2>
+            <p>Science helps us understand the world through observation and experimentation.</p>
+            <div class="lesson">
+                <h3>Lesson 1: The Scientific Method</h3>
+                <p>Learn about the scientific method and its importance.</p>
+                <button onclick="completeLesson(20, true)">Complete Lesson (+20 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+            <div class="lesson">
+                <h3>Lesson 2: Basic Chemistry</h3>
+                <p>Understand the basics of chemistry and elements.</p>
+                <button onclick="completeLesson(20, true)">Complete Lesson (+20 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+        </div>
+
+        <div id="programming" class="hidden">
+            <h2>Programming</h2>
+            <p>Programming involves writing code to create software and applications.</p>
+            <div class="lesson">
+                <h3>Lesson 1: Introduction to Python</h3>
+                <p>Learn the basics of Python programming.</p>
+                <button onclick="completeLesson(25, true)">Complete Lesson (+25 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+            <div class="lesson">
+                <h3>Lesson 2: Variables and Data Types</h3>
+                <p>Understand variables and data types in programming.</p>
+                <button onclick="completeLesson(25, true)">Complete Lesson (+25 XP)</button>
+                <button onclick="failLesson()">Fail Lesson (Lose Heart)</button>
+            </div>
+        </div>
+
+        <div id="leaderboard" class="hidden">
+            <h2>Leaderboard</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Points</th>
+            <th>Current Level</th>
+            <th>Current League</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td id="user-name">Your Name</td>
+            <td id="your-points">0</td>
+            <td id="current-level">1</td>
+            <td id="current-league">Bronze</td>
+        </tr>
+        <!-- Other users can be added here -->
+    </tbody>
+</table>
+<p>Leagues Overview:</p>
+<ul>
+    <li><strong>Bronze:</strong> Levels 1-9</li>
+    <li><strong>Silver:</strong> Levels 10-19</li>
+    <li><strong>Gold:</strong> Levels 20-29</li>
+    <li><strong>Platinum:</strong> Levels 30-39</li>
+    <li><strong>Diamond:</strong> Levels 40-49</li>
+    <li><strong>Master:</strong> Levels 50-59</li>
+    <li><strong>Grandmaster:</strong> Level 60+</li>
+</ul>
+<p>Upgrade to the next league every 10 levels!</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>User1</td>
+                        <td>1000</td>
+                    </tr>
+                    <tr>
+                        <td>User2</td>
+                        <td>950</td>
+                    </tr>
+                    <tr>
+                        <td>User3</td>
+                        <td>900</td>
+                    </tr>
+                    <tr>
+                        <td>User4</td>
+                        <td>800</td>
+                    </tr>
+                     <tr>
+                        <td>User5</td>
+                        <td>750</td>
+                    </tr>
+                    <tr>
+                        <td id="user-name">Your Name</td>
+                        <td id="your-points">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="profile" class="hidden">
+            <h2>Your Profile</h2>
+            <p>View your progress and achievements.</p>
+            <ul>
+                <li>Name: <span id="profile-name">John Doe</span></li>
+                <li>Email: <span id="profile-email">johndoe@example.com</span></li>
+                <li>Completed Courses: <span id="completed-courses">0</span></li>
+                <li>Current Level: <span class="level-display" id="current-level">1</span></li>
+                <li>XP to Level Up: <span id="xp-to-level-up">20</span></li>
+                <li>Achievements: <span id="achievements">0</span></li>
+                <li id="points">Points: <span id="total-points">0</span></li>
+            </ul>
+            <div class="progress-container">
+                <div class="progress-bar" id="xp-progress" style="width: 0;"></div>
+            </div>
+            <p>Current XP: <span id="current-xp">0</span> / <span id="xp-to-level-up">20</span></p>
+        </div>
+
+        <div id="help" class="hidden">
+            <h2>Help</h2>
+            <p>Contact us for support.</p>
+            <p>Email: support@eduxp.com</p>
+            <p>Phone: +1 234 567 890</p>
+        </div>
+
+        <div id="chatbot" class="hidden">
+            <h2>EduAI: Homework Help Chatbot</h2>
+            <p>Ask me anything related to your homework!</p>
+            <div id="chatbot-output"></div>
+            <div id="chatbot-input">
+                <input type="text" id="user-input" placeholder="Type your question here...">
+                <button onclick="submitQuestion()">Ask</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 EduXP. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let totalPoints = 0;
+        let currentLevel = 1;
+        let xpToLevelUp = 20;
+        let userName = "Your Name";
+        let userEmail = "your.email@example.com";
+        let currentXP = 0;
+        let hearts = 3;
+        let heartRegenerationTime = 180; // 3 minutes in seconds
+        let heartTimer;
+        let heartCountdown = heartRegenerationTime;
+
+        function submitUserInfo() {
+            const nameInput = document.getElementById('username').value.trim();
+            const emailInput = document.getElementById('useremail').value.trim();
+
+            if (nameInput && emailInput) {
+                userName = nameInput;
+                userEmail = emailInput;
+                document.getElementById('profile-name').innerText = userName;
+                document.getElementById('profile-email').innerText = userEmail;
+                document.getElementById('user-name').innerText = userName;
+
+                updateHeartsDisplay();
+                startHeartTimer(); // Start the heart regeneration timer
+                showSection('home');
+            } else {
+                alert("Please enter both name and email.");
+            }
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('main > div');
+
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.remove('hidden');
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                    section.classList.add('hidden');
+                }
+            });
+
+            // Clear chatbot output when navigating away from chatbot section
+            if (sectionId !== 'chatbot') {
+                document.getElementById('chatbot-output').innerHTML = '';
+                document.getElementById('user-input').value = '';
+            }
+
+            // Update points and XP on leaderboard and profile
+            if (sectionId === 'leaderboard') {
+                document.getElementById('your-points').innerText = totalPoints;
+            }
+
+            if (sectionId === 'profile') {
+                document.getElementById('total-points').innerText = totalPoints;
+                document.getElementById('current-level').innerText = currentLevel;
+                document.getElementById('xp-to-level-up').innerText = xpToLevelUp;
+                document.getElementById('current-xp').innerText = currentXP;
+                document.getElementById('xp-progress').style.width = (currentXP / xpToLevelUp * 100) + '%';
+            }
+
+            // Disable lessons if out of hearts
+            if (hearts === 0 && (sectionId === 'math' || sectionId === 'english' || sectionId === 'science' || sectionId === 'programming')) {
+                alert("You have no hearts left! Wait for them to regenerate.");
+                showSection('home'); // Redirect to home
+            }
+        }
+
+        function updateHeartsDisplay() {
+            const heartsContainer = document.getElementById('hearts');
+            heartsContainer.innerHTML = 'Hearts: ';
+            for (let i = 0; i < hearts; i++) {
+                heartsContainer.innerHTML += '<span class="heart">❤️</span>';
+            }
+            // Update heart timer display
+            if (hearts < 3) {
+                document.getElementById('heart-timer').classList.remove('hidden');
+                document.getElementById('timer-display').innerText = formatTime(heartCountdown);
+            } else {
+                document.getElementById('heart-timer').classList.add('hidden');
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function startHeartTimer() {
+            heartTimer = setInterval(() => {
+                if (heartCountdown > 0) {
+                    heartCountdown--;
+                    document.getElementById('timer-display').innerText = formatTime(heartCountdown);
+                }
+                if (heartCountdown === 0) {
+                    regainHeart();
+                }
+            }, 1000);
+        }
+
+        function regainHeart() {
+            if (hearts < 3) {
+                hearts++;
+                updateHeartsDisplay();
+                heartCountdown = heartRegenerationTime; // Reset countdown
+            }
+            if (hearts === 3) {
+                clearInterval(heartTimer); // Stop the timer when max hearts reached
+                document.getElementById('heart-timer').classList.add('hidden');
+            }
+        }
+
+        function completeLesson(xp, success) {
+            if (hearts === 0) {
+                alert("You have no hearts left! Wait for them to regenerate.");
+                return;
+            }
+
+            if (success) {
+                currentXP += xp;
+                totalPoints += xp; // Update total points
+                checkLevelUp();
+                updateHeartsDisplay();
+                alert("Lesson completed! You gained " + xp + " XP.");
+            } else {
+                failLesson(); // Handle failure
+            }
+        }
+
+        function failLesson() {
+            if (hearts > 0) {
+                hearts--;
+                alert("You failed the lesson! You lost a heart.");
+                updateHeartsDisplay();
+                if (hearts === 0) {
+                    alert("Game Over! You cannot take lessons until you regain hearts.");
+                }
+            }
+        }
+
+        function checkLevelUp() {
+            if (currentXP >= xpToLevelUp) {
+                currentLevel++;
+                currentXP -= xpToLevelUp; // Carry over excess XP
+                xpToLevelUp += 10; // Increase XP needed for next level
+                alert("Congratulations! You've leveled up to Level " + currentLevel + "!");
+            }
+            updateHeartsDisplay();
+        }
+
+        function submitQuestion() {
+            const userInput = document.getElementById('user-input').value;
+            const response = getChatbotResponse(userInput);
+            document.getElementById('chatbot-output').innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+            document.getElementById('chatbot-output').innerHTML += `<p><strong>EduAI:</strong> ${response}</p>`;
+            document.getElementById('user-input').value = '';
+        }
+
+        function getChatbotResponse(input) {
+    const responses = {
+        "hi": "Hello! How can I help you with your homework?",
+        "help": "I'm here to help! Please ask me any homework-related questions.",
+    };
+
+    // Check for simple arithmetic expressions
+    const mathExpression = input.match(/^(\d+)\s*([\+\-\*\/])\s*(\d+)$/);
+    if (mathExpression) {
+        const num1 = parseFloat(mathExpression[1]);
+        const operator = mathExpression[2];
+        const num2 = parseFloat(mathExpression[3]);
+
+        let result;
+        switch (operator) {
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case '*':
+                result = num1 * num2;
+                break;
+            case '/':
+                if (num2 !== 0) {
+                    result = num1 / num2;
+                } else {
+                    return "Division by zero is not allowed!";
+                }
+                break;
+        }
+        return `${input} = ${result}`;
+    }
+
+    return responses[input.toLowerCase()] || "I'm sorry, I didn't understand that.";
+}
+
+
+        // Initialize hearts display on page load
+        window.onload = updateHeartsDisplay;
+    </script>
+</body>
+</html>
